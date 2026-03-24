@@ -1,34 +1,62 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import logo from '../assets/images/logo.png';
+// Ajustado para o pacote nativo do Expo que já tens instalado
+import Icon from '@expo/vector-icons/Ionicons';
+import { WebView } from 'react-native-webview';
 
+
+// Recebe as ferramentas do index.tsx para tratar de tudo internamente
 interface GameMenuProps {
-  onJogoRapido: () => void;
-  onInstrucoes: () => void;
-  onEscolherDistancias: () => void;
+  setMenuVisible: (visible: boolean) => void;
+  webViewRef: RefObject<WebView | null>; // Adicionado o | null aqui!
 }
 
-export default function GameMenu({ onJogoRapido, onInstrucoes, onEscolherDistancias }: GameMenuProps) {
+export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) {
+
+  // --- LÓGICA INTERNA DO MENU ---
+  const handleJogoRapido = () => {
+    console.log('Clicou em: Jogo Rápido');
+    setMenuVisible(false); // Esconde o menu
+    if (webViewRef.current) {
+      // Dá ordem à WebView para arrancar o jogo
+      webViewRef.current.injectJavaScript('window.startGame(1); true;');
+    }
+  };
+
+  const handleInstrucoes = () => {
+    console.log('Clicou em: Instruções');
+    // Aqui podes decidir se abre um modal de instruções ou se vai para a web
+  };
+
+  const handleEscolherDistancias = () => {
+    console.log('Clicou em: Escolher distancias');
+    setMenuVisible(false); // Esconde o menu
+    if (webViewRef.current) {
+      // Dá ordem à WebView para arrancar com fator X2 (exemplo)
+      webViewRef.current.injectJavaScript('window.startGame(2); true;');
+    }
+  };
+
+  // --- O TEU DESIGN INTACTO ---
   return (
     <SafeAreaView style={styles.menuOverlay}>
       <View style={styles.centerContainer}>
 
-        <Image source={logo} style={styles.logo} resizeMode="contain" />
+        <Image source={require('../assets/images/logo.png')} style={styles.logo} resizeMode="contain" />
 
         <View style={styles.buttonContainer}>
 
-          <TouchableOpacity style={styles.menuButton} onPress={onJogoRapido}>
+          <TouchableOpacity style={styles.menuButton} onPress={handleJogoRapido}>
             <Icon name="flash-outline" size={22} color="#4FC3F7" style={styles.icon} />
             <Text style={styles.menuButtonText}>Jogo Rápido</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuButton} onPress={onInstrucoes}>
+          <TouchableOpacity style={styles.menuButton} onPress={handleInstrucoes}>
             <Icon name="information-circle-outline" size={22} color="#4FC3F7" style={styles.icon} />
             <Text style={styles.menuButtonText}>Instruções</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuButton} onPress={onEscolherDistancias}>
+          <TouchableOpacity style={styles.menuButton} onPress={handleEscolherDistancias}>
             <Icon name="location-outline" size={22} color="#4FC3F7" style={styles.icon} />
             <Text style={styles.menuButtonText}>Escolher distâncias</Text>
           </TouchableOpacity>
@@ -50,9 +78,10 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#0B1A2A', // azul escuro moderno
+    backgroundColor: '#0B1A2A', // azul escuro moderno (O teu estilo)
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 1000, // Adicionei só para garantir que fica SEMPRE por cima da WebView
   },
 
   centerContainer: {
