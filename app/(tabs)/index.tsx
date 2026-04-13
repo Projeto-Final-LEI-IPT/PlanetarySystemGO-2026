@@ -54,6 +54,7 @@ export default function App() {
       <WebView
         ref={webViewRef}
         source={{ uri: 'https://projeto-final-lei-ipt.github.io/PlanetarySystemV2/webview/' }}
+        //source={{ uri: ' https://rebuttal-chowder-friction.ngrok-free.dev/webview/' }}
         style={styles.webview}
         javaScriptEnabled={true}
         domStorageEnabled={true}
@@ -62,6 +63,18 @@ export default function App() {
         mediaPlaybackRequiresUserAction={false}
         originWhitelist={['*']}
         injectedJavaScriptBeforeContentLoaded={getInjectGPS(initialLoc)}
+        
+        // --- NOVA PARTE AQUI ---
+        // Fica à escuta das mensagens enviadas pelo JavaScript (HTML)
+        onMessage={(event) => {
+          const mensagem = event.nativeEvent.data;
+          
+          if (mensagem === "voltar_para_o_menu") {
+            console.log("Recebido pedido para voltar ao menu!");
+            setMenuVisible(true); // Volta a mostrar o menu azul do React Native
+          }
+        }}
+        // -----------------------
       />
 
       {/* Passamos o webViewRef e o setMenuVisible para o Menu se auto-gerir */}
