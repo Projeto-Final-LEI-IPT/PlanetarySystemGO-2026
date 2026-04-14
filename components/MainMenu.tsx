@@ -78,7 +78,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#0B1A2A', // azul escuro moderno (O teu estilo)
+    //backgroundColor: '#0B1A2A',
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1000, // Adicionei só para garantir que fica SEMPRE por cima da WebView
@@ -104,28 +105,28 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
 
-  buttonContainer: {
+ buttonContainer: {
     width: '85%',
   },
 
   menuButton: {
-    flexDirection: 'row', // IMPORTANTE para ícone + texto
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.05)', // leve transparência
+    backgroundColor: '#12263A', 
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderRadius: 12,
     marginVertical: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(79,195,247,0.3)', // azul suave
+    // Removida a borda anterior para destacar o azul no fundo branco
   },
 
   icon: {
     marginRight: 12,
+    color: '#FFFFFF', // Ícone passa a ser branco para contrastar com o botão azul
   },
 
   menuButtonText: {
-    color: '#FFFFFF',
+    color: '#FFFFFF', // Texto passa a ser branco para contrastar com o botão azul
     fontSize: 18,
     fontWeight: '500',
   },
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
   },
 
   footerText: {
-    color: '#FFFFFF',
+    color: '#000000', // Texto da versão em preto para ser legível no branco
     fontSize: 13,
     opacity: 0.5,
   },
