@@ -28,7 +28,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "A aplicação necessita do GPS para as funcionalidades de localização."
         }
-      ]
+      ],
+      "expo-web-browser"
     ]
   }
 }

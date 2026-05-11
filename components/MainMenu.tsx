@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React, { RefObject, useState } from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 // Ajustado para o pacote nativo do Expo que já tens instalado
 import Icon from '@expo/vector-icons/Ionicons';
@@ -12,15 +12,19 @@ interface GameMenuProps {
 }
 
 export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) {
+  const [showDistances, setShowDistances] = useState(false);
 
   // --- LÓGICA INTERNA DO MENU ---
-  const handleJogoRapido = () => {
-    console.log('Clicou em: Jogo Rápido');
+  const handleStartGame = (factor: number) => {
+    console.log(`Arrancando jogo com fator X${factor}`);
     setMenuVisible(false); // Esconde o menu
     if (webViewRef.current) {
-      // Dá ordem à WebView para arrancar o jogo
-      webViewRef.current.injectJavaScript('window.startGame(1); true;');
+      webViewRef.current.injectJavaScript(`window.startGame(${factor}); true;`);
     }
+  };
+
+  const handleJogoRapido = () => {
+    handleStartGame(1);
   };
 
   const handleInstrucoes = () => {
@@ -29,12 +33,7 @@ export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) 
   };
 
   const handleEscolherDistancias = () => {
-    console.log('Clicou em: Escolher distancias');
-    setMenuVisible(false); // Esconde o menu
-    if (webViewRef.current) {
-      // Dá ordem à WebView para arrancar com fator X2 (exemplo)
-      webViewRef.current.injectJavaScript('window.startGame(2); true;');
-    }
+    setShowDistances(true);
   };
 
   // --- O TEU DESIGN INTACTO ---
@@ -45,22 +44,53 @@ export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) 
         <Image source={require('../assets/images/logo.png')} style={styles.logo} resizeMode="contain" />
 
         <View style={styles.buttonContainer}>
+          {!showDistances ? (
+            <>
+              <TouchableOpacity style={styles.menuButton} onPress={handleJogoRapido}>
+                <Icon name="flash-outline" size={22} color="#4FC3F7" style={styles.icon} />
+                <Text style={styles.menuButtonText}>Jogo Rápido</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuButton} onPress={handleJogoRapido}>
-            <Icon name="flash-outline" size={22} color="#4FC3F7" style={styles.icon} />
-            <Text style={styles.menuButtonText}>Jogo Rápido</Text>
-          </TouchableOpacity>
+              <TouchableOpacity style={styles.menuButton} onPress={handleInstrucoes}>
+                <Icon name="information-circle-outline" size={22} color="#4FC3F7" style={styles.icon} />
+                <Text style={styles.menuButtonText}>Instruções</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuButton} onPress={handleInstrucoes}>
-            <Icon name="information-circle-outline" size={22} color="#4FC3F7" style={styles.icon} />
-            <Text style={styles.menuButtonText}>Instruções</Text>
-          </TouchableOpacity>
+              <TouchableOpacity style={styles.menuButton} onPress={handleEscolherDistancias}>
+                <Icon name="location-outline" size={22} color="#4FC3F7" style={styles.icon} />
+                <Text style={styles.menuButtonText}>Escolher distâncias</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Text style={styles.subMenuTitle}>Selecione a Escala:</Text>
+              
+              <TouchableOpacity style={styles.menuButton} onPress={() => handleStartGame(1)}>
+                <Icon name="resize-outline" size={22} color="#4FC3F7" style={styles.icon} />
+                <Text style={styles.menuButtonText}>Escala 1x (Perto)</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuButton} onPress={handleEscolherDistancias}>
-            <Icon name="location-outline" size={22} color="#4FC3F7" style={styles.icon} />
-            <Text style={styles.menuButtonText}>Escolher distâncias</Text>
-          </TouchableOpacity>
+              <TouchableOpacity style={styles.menuButton} onPress={() => handleStartGame(2)}>
+                <Icon name="resize-outline" size={22} color="#4FC3F7" style={styles.icon} />
+                <Text style={styles.menuButtonText}>Escala 2x</Text>
+              </TouchableOpacity>
 
+              <TouchableOpacity style={styles.menuButton} onPress={() => handleStartGame(3)}>
+                <Icon name="resize-outline" size={22} color="#4FC3F7" style={styles.icon} />
+                <Text style={styles.menuButtonText}>Escala 3x</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.menuButton} onPress={() => handleStartGame(5)}>
+                <Icon name="resize-outline" size={22} color="#4FC3F7" style={styles.icon} />
+                <Text style={styles.menuButtonText}>Escala 5x (Longe)</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={[styles.menuButton, {marginTop: 20, borderColor: 'rgba(255,255,255,0.3)'}]} onPress={() => setShowDistances(false)}>
+                <Icon name="arrow-back-outline" size={22} color="#FFFFFF" style={styles.icon} />
+                <Text style={styles.menuButtonText}>Voltar</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
 
@@ -102,6 +132,14 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '600',
     marginBottom: 50,
+  },
+
+  subMenuTitle: {
+    color: '#4FC3F7',
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 20,
+    textAlign: 'center',
   },
 
   buttonContainer: {
