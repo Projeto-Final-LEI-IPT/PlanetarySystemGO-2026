@@ -54,7 +54,10 @@ export default function App() {
       <WebView
         ref={webViewRef}
         source={{ uri: 'https://projeto-final-lei-ipt.github.io/PlanetarySystemV2/webview/' }}
+        
+        
         //source={{ uri: ' https://rebuttal-chowder-friction.ngrok-free.dev/webview/' }}
+
         style={styles.webview}
         javaScriptEnabled={true}
         domStorageEnabled={true}
