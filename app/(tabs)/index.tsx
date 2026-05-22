@@ -1,7 +1,8 @@
+import Icon from '@expo/vector-icons/Ionicons';
 import { Camera } from 'expo-camera';
 import * as Location from 'expo-location';
 import React, { useEffect, useRef, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import MainMenu from '@/components/MainMenu';
@@ -77,6 +78,16 @@ export default function App() {
         // -----------------------
       />
 
+      {/* Botão de Saída Flutuante - Aparece apenas quando o jogo está a decorrer */}
+      {!menuVisible && (
+        <TouchableOpacity 
+          style={styles.exitButton} 
+          onPress={() => setMenuVisible(true)}
+        >
+          <Icon name="close-circle" size={45} color="rgba(255, 255, 255, 0.8)" />
+        </TouchableOpacity>
+      )}
+
       {/* Passamos o webViewRef e o setMenuVisible para o Menu se auto-gerir */}
       {menuVisible && (
         <MainMenu 
@@ -93,4 +104,10 @@ const styles = StyleSheet.create({
   center: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#000' },
   webview: { flex: 1 },
   text: { color: 'white', padding: 20, textAlign: 'center' },
+  exitButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 2000,
+  },
 });

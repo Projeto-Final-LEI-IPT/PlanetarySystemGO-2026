@@ -21,15 +21,6 @@ export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) 
     }
   };
 
-  const handleJogarOffline = () => {
-    console.log('Clicou em: Jogar Offline');
-    setMenuVisible(false);
-    if (webViewRef.current) {
-      // Exemplo: Envia um comando específico para o modo offline
-      webViewRef.current.injectJavaScript('window.startOfflineMode(); true;');
-    }
-  };
-
   const handleInstrucoes = () => {
     console.log('Navegando para: Instruções');
     router.push('/instructions');
@@ -66,12 +57,6 @@ export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) 
             <Text style={styles.menuButtonText}>Jogo Rápido</Text>
           </TouchableOpacity>
 
-          {/* NOVO BOTÃO: JOGAR OFFLINE */}
-          <TouchableOpacity style={styles.menuButton} onPress={handleJogarOffline}>
-            <Icon name="cloud-offline-outline" size={22} color="#FFFFFF" style={styles.icon} />
-            <Text style={styles.menuButtonText}>Jogar Offline</Text>
-          </TouchableOpacity>
-
           {/* Botão Instruções */}
           <TouchableOpacity style={styles.menuButton} onPress={handleInstrucoes}>
             <Icon name="information-circle-outline" size={22} color="#FFFFFF" style={styles.icon} />
@@ -92,10 +77,7 @@ export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) 
         </View>
       </View>
 
-      {/* Versão no Rodapé */}
-      <View style={styles.footerContainer}>
-        <Text style={styles.footerText}>v1.0.2</Text>
-      </View>
+      {/* Versão no Rodapé Removida */}
     </SafeAreaView>
   );
 }

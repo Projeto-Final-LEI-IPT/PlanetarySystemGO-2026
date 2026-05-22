@@ -1,9 +1,11 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Stack } from 'expo-router';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { Stack, useRouter } from 'expo-router';
+import { ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
 
 export default function InstructionsScreen() {
+  const router = useRouter();
+
   return (
     <ThemedView style={styles.container}>
       {/* Configura o título na barra superior e a cor da seta de voltar */}
@@ -45,6 +47,13 @@ export default function InstructionsScreen() {
             Se estiveres dentro do simulador e quiseres voltar, procura o botão de saída no ecrã ou usa a navegação do sistema.
           </ThemedText>
         </View>
+
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => router.replace('/')}
+        >
+          <ThemedText style={styles.backButtonText}>Voltar ao Menu Inicial</ThemedText>
+        </TouchableOpacity>
       </ScrollView>
     </ThemedView>
   );
@@ -76,5 +85,18 @@ const styles = StyleSheet.create({
   textContent: {
     fontSize: 16,
     lineHeight: 24,
+  },
+  backButton: {
+    backgroundColor: '#12263A',
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 20,
+    marginBottom: 40,
+    alignItems: 'center',
+  },
+  backButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '500',
   },
 });
