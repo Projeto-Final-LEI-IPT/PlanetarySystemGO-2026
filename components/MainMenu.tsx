@@ -1,5 +1,5 @@
 import Icon from '@expo/vector-icons/Ionicons';
-import { useRouter } from 'expo-router'; // Importação necessária para navegar
+import { useRouter } from 'expo-router';
 import React, { RefObject } from 'react';
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -10,15 +10,27 @@ interface GameMenuProps {
 }
 
 export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) {
-  const router = useRouter(); // Inicializa o navegador
+  const router = useRouter();
 
-  // --- LÓGICA INTERNA ---
-  const handleJogoRapido = () => {
-    console.log('Clicou em: Jogo Rápido');
-    setMenuVisible(false);
+  // --- LÓGICA DE INÍCIO DO JOGO ---
+  const startGame = (factor: number) => {
+    console.log(`Iniciando jogo com fator X${factor}`);
+    
     if (webViewRef.current) {
-      webViewRef.current.injectJavaScript('window.startGame(1); true;');
+      // Definimos o URL base das páginas de jogo
+      const baseUrl = 'https://projeto-final-lei-ipt.github.io/PlanetarySystemV2/webview/Pages/';
+      // Determinamos o ficheiro correto com base no fator
+      const page = `GamePageX${factor}.html`;
+      
+      // Injetamos o comando para mudar de página diretamente no browser da WebView
+      const script = `window.location.href = '${baseUrl}${page}'; true;`;
+      webViewRef.current.injectJavaScript(script);
     }
+
+    // Pequeno atraso para garantir que o comando é enviado antes de esconder o menu
+    setTimeout(() => {
+      setMenuVisible(false);
+    }, 200);
   };
 
   const handleInstrucoes = () => {
@@ -26,18 +38,9 @@ export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) 
     router.push('/instructions');
   };
 
-  const handleEscolherDistancias = () => {
-    console.log('Clicou em: Escolher distancias');
-    setMenuVisible(false);
-    if (webViewRef.current) {
-      webViewRef.current.injectJavaScript('window.startGame(2); true;');
-    }
-  };
-
   const handleAbout = () => {
     console.log('Navegando para: About');
-    //setMenuVisible(false); // Esconde o menu para mostrar a nova página
-    router.push('/about'); // Navega para app/about.tsx
+    router.push('/about');
   };
 
   return (
@@ -51,22 +54,30 @@ export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) 
         />
 
         <View style={styles.buttonContainer}>
-          {/* Botão Jogo Rápido */}
-          <TouchableOpacity style={styles.menuButton} onPress={handleJogoRapido}>
+          {/* Botão Jogo Rápido (X1) */}
+          <TouchableOpacity style={styles.menuButton} onPress={() => startGame(1)}>
             <Icon name="flash-outline" size={22} color="#FFFFFF" style={styles.icon} />
-            <Text style={styles.menuButtonText}>Jogo Rápido</Text>
+            <Text style={styles.menuButtonText}>Jogo Rápido (Real)</Text>
           </TouchableOpacity>
+
+          {/* SECÇÃO DE DISTÂNCIAS */}
+          <Text style={styles.sectionTitle}>Escolher Escala de Distância:</Text>
+          <View style={styles.distanceGrid}>
+            {[1, 2, 3, 5].map((f) => (
+              <TouchableOpacity 
+                key={f} 
+                style={styles.distButton} 
+                onPress={() => startGame(f)}
+              >
+                <Text style={styles.distButtonText}>X{f}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
           {/* Botão Instruções */}
           <TouchableOpacity style={styles.menuButton} onPress={handleInstrucoes}>
             <Icon name="information-circle-outline" size={22} color="#FFFFFF" style={styles.icon} />
             <Text style={styles.menuButtonText}>Instruções</Text>
-          </TouchableOpacity>
-
-          {/* Botão Escolher Distâncias */}
-          <TouchableOpacity style={styles.menuButton} onPress={handleEscolherDistancias}>
-            <Icon name="location-outline" size={22} color="#FFFFFF" style={styles.icon} />
-            <Text style={styles.menuButtonText}>Escolher distâncias</Text>
           </TouchableOpacity>
 
           {/* Botão About */}
@@ -89,7 +100,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'white', // Fundo Branco solicitado
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1000,
@@ -108,16 +119,48 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '85%',
   },
+  sectionTitle: {
+    fontSize: 14,
+    color: '#12263A',
+    fontWeight: 'bold',
+    marginTop: 15,
+    marginBottom: 10,
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  distanceGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  distButton: {
+    backgroundColor: '#12263A',
+    width: '22%',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  distButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   menuButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#12263A', // Azul marinho ligeiramente mais claro
+    backgroundColor: '#12263A',
     paddingVertical: 16,
     paddingHorizontal: 20,
     borderRadius: 12,
-    marginVertical: 10,
-    elevation: 3, // Sombra leve para Android
-    shadowColor: '#000', // Sombra leve para iOS
+    marginVertical: 8,
+    elevation: 3,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -126,18 +169,8 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   menuButtonText: {
-    color: '#FFFFFF', // Texto Branco para contraste
-    fontSize: 18,
+    color: '#FFFFFF',
+    fontSize: 17,
     fontWeight: '500',
-  },
-  footerContainer: {
-    position: 'absolute',
-    bottom: 20,
-    alignItems: 'center',
-  },
-  footerText: {
-    color: '#000000', // Texto preto para leitura no fundo branco
-    fontSize: 13,
-    opacity: 0.5,
   },
 });

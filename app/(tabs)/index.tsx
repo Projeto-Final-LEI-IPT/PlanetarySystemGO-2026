@@ -64,6 +64,11 @@ export default function App() {
         mediaPlaybackRequiresUserAction={false}
         originWhitelist={['*']}
         injectedJavaScriptBeforeContentLoaded={getInjectGPS(initialLoc)}
+        onLoadEnd={() => {
+          if (initialLoc && webViewRef.current) {
+            webViewRef.current.injectJavaScript(getInjectGPS(initialLoc));
+          }
+        }}
         
         // --- NOVA PARTE AQUI ---
         // Fica à escuta das mensagens enviadas pelo JavaScript (HTML)
