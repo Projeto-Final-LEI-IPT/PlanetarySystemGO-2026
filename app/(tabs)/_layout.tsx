@@ -15,6 +15,8 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarButton: HapticTab,
+        // Esta é a linha que esconde completamente o footer/tab bar
+        tabBarStyle: { display: 'none' }, 
       }}>
       <Tabs.Screen
         name="index"

@@ -56,7 +56,7 @@ export default function App() {
         source={{ uri: 'https://projeto-final-lei-ipt.github.io/PlanetarySystemV2/webview/' }}
         
         
-        //source={{ uri: ' https://rebuttal-chowder-friction.ngrok-free.dev/webview/' }}
+        //source={{ uri: ' https://github.com/Projeto-Final-LEI-IPT/PlanetarySystemV2/tree/escolher-distancia/webview' }}
 
         style={styles.webview}
         javaScriptEnabled={true}

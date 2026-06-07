@@ -1,4 +1,4 @@
-package com.pedro.planetarysystemgo
+package com.planetarysystemgo
 
 import android.app.Application
 import android.content.res.Configuration
