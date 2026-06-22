@@ -1,7 +1,7 @@
 import Icon from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
-import React, { RefObject } from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { RefObject, useState } from 'react';
+import { Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 interface GameMenuProps {
@@ -11,6 +11,8 @@ interface GameMenuProps {
 
 export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) {
   const router = useRouter();
+  const [systemId, setSystemId] = useState('');
+  const [serverIp, setServerIp] = useState('192.168.1.');
 
   // --- LÓGICA DE INÍCIO DO JOGO ---
   const startGame = (factor: number) => {
@@ -22,8 +24,17 @@ export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) 
       // Determinamos o ficheiro correto com base no fator
       const page = `GamePageX${factor}.html`;
       
+      // Constrói os parâmetros do backoffice se fornecidos
+      let queryParams = '';
+      if (systemId.trim()) {
+        const backendBase = serverIp.trim().startsWith('http') 
+          ? serverIp.trim() 
+          : `http://${serverIp.trim()}/PlanetarySystemTPSI/PlanetarySystemGo-2026/WebServices/`;
+        queryParams = `?id=${systemId.trim()}&backendUrl=${encodeURIComponent(backendBase)}`;
+      }
+      
       // Injetamos o comando para mudar de página diretamente no browser da WebView
-      const script = `window.location.href = '${baseUrl}${page}'; true;`;
+      const script = `window.location.href = '${baseUrl}${page}${queryParams}'; true;`;
       webViewRef.current.injectJavaScript(script);
     }
 
@@ -59,6 +70,26 @@ export default function GameMenu({ setMenuVisible, webViewRef }: GameMenuProps) 
             <Icon name="flash-outline" size={22} color="#FFFFFF" style={styles.icon} />
             <Text style={styles.menuButtonText}>Jogo Rápido (Real)</Text>
           </TouchableOpacity>
+
+          {/* Integração com Backoffice */}
+          <Text style={styles.sectionTitle}>Carregar do Backoffice (Opcional):</Text>
+          <View style={styles.inputRow}>
+            <TextInput
+              style={[styles.input, { flex: 1, marginRight: 8 }]}
+              placeholder="ID Sistema"
+              placeholderTextColor="#999"
+              keyboardType="numeric"
+              value={systemId}
+              onChangeText={setSystemId}
+            />
+            <TextInput
+              style={[styles.input, { flex: 2 }]}
+              placeholder="IP / Host do Servidor"
+              placeholderTextColor="#999"
+              value={serverIp}
+              onChangeText={setServerIp}
+            />
+          </View>
 
           {/* SECÇÃO DE DISTÂNCIAS */}
           <Text style={styles.sectionTitle}>Escolher Escala de Distância:</Text>
@@ -172,5 +203,20 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 17,
     fontWeight: '500',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#12263A',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    color: '#12263A',
+    fontSize: 14,
+    backgroundColor: '#F8F9FA',
   },
 });
